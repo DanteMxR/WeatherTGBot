@@ -4,7 +4,50 @@ const apiKey = 'a7a395383796d06cca8a9b6e28d5e277';
 const TelegramApi = require('node-telegram-bot-api')
 const TGtoken = '6210842516:AAFwnmG0o5nzixdJTrZW3_fhT3YGQMlvgbs'
 const bot = new TelegramApi(TGtoken, {polling:true})
-
+let Ruweather=''
+function TranslateWeather(weather)
+{
+ if(weather==='Clouds')
+ {
+  Ruweather='Облачно☁️'
+ }
+ if(weather==='Clear')
+ {
+  Ruweather='Ясно☀️'
+ }
+ if(weather==='Drizzle')
+ {
+  Ruweather='Морось🌨'
+ }
+ if(weather==='Thunderstorm')
+ {
+  Ruweather='Гроза⛈'
+ }
+ if(weather==='Snow')
+ {
+  Ruweather='Снег☃️'
+ }
+ if(weather==='Mist')
+ {
+  Ruweather='Туман🌫'
+ }
+ if(weather==='Smoke')
+ {
+  Ruweather='Дым🌫'
+ }
+ if(weather==='Tornado')
+ {
+  Ruweather='Торнадо🌪'
+ }
+ if(weather==='Fog')
+ {
+  Ruweather='Туман🌫'
+ }
+ if(weather==='Haze')
+ {
+  Ruweather='Мгла🧟‍♂️'
+ }
+}
 
 const commands = [
   { command: '/start', description: 'Начать' },
@@ -31,7 +74,7 @@ bot.on('message', async msg => {
 
   if(text==='/info')
   {
-    bot.sendMessage(chatId, 'Я бот предназначеный для прогноза погоды созданый Dante другие работы моего гениального создателя можно посмотреть здесь:https://github.com/DanteMxR');
+    bot.sendMessage(chatId, 'Я бот предназначеный для прогноза погоды созданый Dante другие работы моего гениального автора можно посмотреть здесь:https://github.com/DanteMxR');
   }
 
   if (text === '/weather') { 
@@ -47,8 +90,11 @@ bot.on('message', async msg => {
               .then(data => {
                   const City = data.name;
                   const temperature = data.main.temp;
+                  const weather = data.weather[0].main
                   const celsiusTemperature = temperature - 271.15;
-                   bot.sendMessage(chatId, `Температура в ${City} равняется ${celsiusTemperature.toFixed(1)}°C`);
+                  TranslateWeather(weather)
+                  bot.sendMessage(chatId, `Температура в ${City} равняется ${celsiusTemperature.toFixed(1)}°C 
+${Ruweather}`);
               })
               .catch(error => { 
                   console.error('Ошибка получения данных:', error);
