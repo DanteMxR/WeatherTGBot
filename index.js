@@ -5,50 +5,6 @@ const TelegramApi = require('node-telegram-bot-api')
 const TGtoken = '6210842516:AAFwnmG0o5nzixdJTrZW3_fhT3YGQMlvgbs'
 const bot = new TelegramApi(TGtoken, {polling:true})
 let Ruweather=''
-function TranslateWeather(weather)
-{
- if(weather==='Clouds')
- {
-  Ruweather='Облачно☁️'
- }
- if(weather==='Clear')
- {
-  Ruweather='Ясно☀️'
- }
- if(weather==='Drizzle')
- {
-  Ruweather='Морось🌨'
- }
- if(weather==='Thunderstorm')
- {
-  Ruweather='Гроза⛈'
- }
- if(weather==='Snow')
- {
-  Ruweather='Снег☃️'
- }
- if(weather==='Mist')
- {
-  Ruweather='Туман🌫'
- }
- if(weather==='Smoke')
- {
-  Ruweather='Дым🌫'
- }
- if(weather==='Tornado')
- {
-  Ruweather='Торнадо🌪'
- }
- if(weather==='Fog')
- {
-  Ruweather='Туман🌫'
- }
- if(weather==='Haze')
- {
-  Ruweather='Мгла🧟‍♂️'
- }
-}
-
 const commands = [
   { command: '/start', description: 'Начать' },
   { command: '/weather', description: 'Узнать погоду' },
@@ -70,7 +26,7 @@ bot.on('message', async msg => {
   if (text === '/start') {
        await bot.sendMessage(chatId, `Привет ${name}! Я бот, предназначенный для прогноза погоды.`);
        await bot.sendMessage(chatId, `⛈`);
-  }
+}
 
   if(text==='/info')
   {
@@ -83,7 +39,7 @@ bot.on('message', async msg => {
 
       bot.once('message', weathermsg => {
           const city = weathermsg.text;
-          const fullURL = `${apiURL}q=${city}&appid=${apiKey}`;
+          const fullURL = `${apiURL}q=${city}&appid=${apiKey}&lang=ru`;
 
           fetch(fullURL)
               .then(response => response.json())
@@ -91,10 +47,9 @@ bot.on('message', async msg => {
                   const City = data.name;
                   const temperature = data.main.temp;
                   const weather = data.weather[0].main
+                  const translatedWeather = TranslateWeather(weather);
                   const celsiusTemperature = temperature - 271.15;
-                  TranslateWeather(weather)
-                  bot.sendMessage(chatId, `Температура в ${City} равняется ${celsiusTemperature.toFixed(1)}°C 
-${Ruweather}`);
+                  bot.sendMessage(chatId, `Температура в ${City} равняется ${celsiusTemperature.toFixed(1)}°C ${translatedWeather}`);
               })
               .catch(error => { 
                   console.error('Ошибка получения данных:', error);
@@ -102,3 +57,20 @@ ${Ruweather}`);
       });
   }
 });
+function TranslateWeather(weather)
+{
+  const translations = {
+    Clear:'Ясно☀️',
+    Clouds:'Облачно☁️',
+    Rain:'Дождь🌨',
+    Haze:'Мгла🧟‍♂️',
+    Fog:'Туман🌫',
+    Tornado:'Торнадо🌪',
+    Smoke: 'Дым🌫',
+    Mist: 'Туман🌫',
+    Snow: 'Снег☃️',
+    Thunderstorm:'Гроза⛈',
+    Drizzle: 'Морось🌨',
+  };
+ return translations[weather] || weather;
+}
