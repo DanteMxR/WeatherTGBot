@@ -2,7 +2,7 @@ const apiURL = 'https://api.openweathermap.org/data/2.5/weather?';
 const apiKey = 'a7a395383796d06cca8a9b6e28d5e277';
 
 const TelegramApi = require('node-telegram-bot-api')
-const TGtoken = '6210842516:AAFwnmG0o5nzixdJTrZW3_fhT3YGQMlvgbs'
+const TGtoken = ''
 const bot = new TelegramApi(TGtoken, {polling:true})
 let Ruweather=''
 const commands = [
